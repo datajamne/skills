@@ -13,6 +13,8 @@ import json
 import requests
 
 import csv
+import locale
+locale.setlocale(locale.LC_ALL, 'en_GB.UTF-8')
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -20,30 +22,31 @@ Bootstrap(app)
 @app.route('/')
 def home():
 
-	return render_template('djhome.html')
+    return render_template('index.html')
 
 @app.route('/djresult', methods=['POST'])
 def form():
-	dataframe = pd.read_csv('adzuna_skill_salary_median.csv')
-	
-	username = '.Net'
+    dataframe = pd.read_csv('adzuna_skill_salary_median.csv')
 
-	fo = dataframe[username]
-	string_value1 = str(fo)
-	yup = fo.mean()
-	
-	with open('adzuna_skill_salary_median.csv', 'rt') as f:
-	     reader = csv.reader(f, delimiter=',') # good point by @paco
-	     for row in reader:
-	        for field in row:
-	          if field == username:
-	            datajam_pred = field
+    skill = request.form['skills']
 
-	return render_template('djresult.html', data_obj =  datajam_pred, data_obj2 = yup)
+    fo = dataframe[skill]
+    string_value1 = str(fo)
+    yup = locale.currency(fo.mean(), grouping=True)
+    salary = yup.decode("utf8")
+	
+    with open('adzuna_skill_salary_median.csv', 'rt') as f:
+         reader = csv.reader(f, delimiter=',') # good point by @paco
+         for row in reader:
+            for field in row:
+              if field == skill:
+                datajam_pred = field
+
+    return render_template('result.html', data_obj = skill, data_obj2 = salary)
 
 
 if __name__ == '__main__':
-	#app.run(debug=True)
-	app.run(debug=True)
+    #app.run(debug=True)
+    app.run(debug=True)
 
 
