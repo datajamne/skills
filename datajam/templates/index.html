@@ -22,7 +22,7 @@
       <form method="POST" action="http://localhost:5000/djresult">
         <div class="form-group">
           <label for="skills">Your skills</label>
-          <select name="skills" id="skills">
+          <select name="skills[]" id="skills">
             <option value="">-- Please select --</option>
             <option value="Navigation and Control">Navigation and Control</option>
             <option value="Safety and Hygiene Legislation">Safety and Hygiene Legislation</option>
@@ -6287,7 +6287,7 @@
     <script>
       $(function () {
         $('select').selectize({
-          sortField: 'text'
+          maxItems: Infinity
         });
       });
     </script>
