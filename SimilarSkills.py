@@ -27,7 +27,7 @@ B=Adj.divide(Diag)
 Corr=B.multiply(B.transpose())
 
 
-# In[22]:
+# In[45]:
 
 
 # Choosing n skills most correlated to user's skills (mySkills)
@@ -51,7 +51,7 @@ SkillSalary=pd.read_csv('https://datajam2018.blob.core.windows.net/eventopendata
 Salary=SkillSalary.loc[201807]
 
 
-# In[44]:
+# In[51]:
 
 
 # For each recommended skill return median salary
@@ -62,5 +62,41 @@ def SimilarSalary (mySkills, n) :
 
 # Test
 #mySkills = ['Sales','Marketing','Business Development','Project Management']
+#mySkills =['Analysis', 'Statistics','Data','Microsoft Excel', 'R']
 #SimilarSalary(mySkills,10)
+
+
+# *Job Titles*: Using users current and recommended skills return related jobtitles
+
+# In[54]:
+
+
+# Get the skills and job titles data
+SkillJobs=pd.read_csv('https://datajam2018.blob.core.windows.net/eventopendata/ne_data/dwp_data/adzuna_skills_jobs_201704_201803.csv')
+SkillJobs=SkillJobs.set_index('normalised_job_title')
+
+
+# In[82]:
+
+
+# For a list of skills return related job titles
+JobFreq=SkillJobs.sum(axis=1) # Get total frequency for all jobs
+RelativeFreq=SkillJobs.div(JobFreq, axis=0) # For each job get relative frequency of skills
+
+def RelatedJobs (mySkills, n) :
+    MyRelativeFreq=RelativeFreq[mySkills] # Pick out relative frequency of users skills
+    myJobs=MyRelativeFreq.sum(axis=1)
+    myJobs=myJobs.sort_values(ascending=False)
+    return myJobs[:n]
+
+
+# In[93]:
+
+
+#mySkills = ['Sales','Marketing','Business Development','Project Management']
+#mySkills =['Analysis', 'Statistics','Data','Microsoft Excel', 'R']
+#Sims=SimilarSkills(mySkills,10).index.values
+#AllSkills=np.append(np.array(mySkills),Sims)
+#RelatedJobs(mySkills.append(SimilarSkills(mySkills,10)),10)
+#RelatedJobs(AllSkills,10)
 
